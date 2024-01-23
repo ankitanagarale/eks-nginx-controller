@@ -20,3 +20,57 @@ spec:
         image: nginx
         ports:
         - containerPort: 80
+
+        OR 
+
+# If  we want to  host index.html file on nginx 
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-html
+  namespace: demo-ingress
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Welcome to My Website</title>
+    </head>
+    <body>
+      <h1>Hello from Nginx!.......</h1>
+      <h2>congratulations  ankita you succesfuly created nginx-ingress controller </h2>
+    </body>
+    </html>
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: demo-ingress
+  labels:
+    env: dev
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      env: dev
+  template:
+    metadata:
+      labels:
+        env: dev
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: html-volume
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: html-volume
+        configMap:
+          name: nginx-html
+          */
+          
